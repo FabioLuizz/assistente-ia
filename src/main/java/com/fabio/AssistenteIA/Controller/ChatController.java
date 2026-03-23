@@ -1,5 +1,8 @@
 package com.fabio.AssistenteIA.Controller;
 
+import com.fabio.AssistenteIA.Dto.PerguntaDto;
+import com.fabio.AssistenteIA.Dto.RespostaDto;
+import jakarta.validation.Valid;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,18 +21,26 @@ public class ChatController {
     }
 
     @PostMapping("/perguntar")
-    public ResponseEntity<String> perguntar(@RequestBody String prompt) {
+    public ResponseEntity<RespostaDto> perguntar(@RequestBody PerguntaDto dto) {
 
-        if(prompt == null || prompt.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Prompt não pode ser vázio");
+        if(dto.prompt() == null || dto.prompt().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(new RespostaDto(
+                    "O prompt não pode ser vázio",
+                    "GEMINI"
+            ));
         }
 
         String resposta = chatClient.prompt()
-                .user(prompt)
+                .user(dto.prompt())
                 .call()
                 .content();
 
-        return ResponseEntity.ok(resposta);
+        RespostaDto respostaDto = new RespostaDto(
+                resposta,
+                "GEMINI"
+        );
+
+        return ResponseEntity.ok(respostaDto);
     }
 
 }
