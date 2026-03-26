@@ -21,7 +21,7 @@ public class ChatController {
     }
 
     @PostMapping("/perguntar")
-    public ResponseEntity<RespostaDto> perguntar(@RequestBody PerguntaDto dto) {
+    public ResponseEntity<RespostaDto> perguntar(@RequestBody @Valid PerguntaDto dto) {
 
         if(dto.prompt() == null || dto.prompt().trim().isEmpty()) {
             return ResponseEntity.badRequest().body(new RespostaDto(
